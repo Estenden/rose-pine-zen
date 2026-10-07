@@ -1,0 +1,8 @@
+# Ignore local scratch files and screenshots.
+screenshots/
+*.local.css
+
+# Editor noise.
+*.swp
+*~
+.DS_Store

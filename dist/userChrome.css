@@ -1,0 +1,342 @@
+/* Rosé Pine for Zen Browser
+ *
+ * Palette files and the base variable mapping come from rose-pine/zen-browser
+ * (MIT, GoulvenV and Wiktor Zykubek). Everything below the upstream block is
+ * local: it fixes values that ship as literals or system colors, which no
+ * palette can reach by overriding a variable.
+ *
+ * Switch variant by changing the @import:
+ *   rose-pine-main.css   dark
+ *   rose-pine-moon.css   dark, muted
+ *   rose-pine-dawn.css   light
+ *
+ * Verified against Zen Browser 1.23b (Mozilla Zen 1.23b) on Linux.
+ */
+
+@import "rose-pine-main.css";
+
+/* ── Upstream variable mapping ────────────────────────────────────────────────
+ * Unchanged from rose-pine/zen-browser/dist/userChrome.css.
+ */
+
+:root {
+  --zen-colors-primary: var(--base) !important;
+  --zen-primary-color: var(--base) !important;
+  --zen-colors-secondary: var(--surface) !important;
+  --zen-colors-tertiary: var(--overlay) !important;
+  --zen-colors-border: var(--iris) !important;
+  --toolbarbutton-icon-fill: var(--iris) !important;
+  --lwt-text-color: var(--text) !important;
+  --toolbar-field-color: var(--text) !important;
+  --tab-selected-textcolor: var(--iris) !important;
+  --toolbar-field-focus-color: var(--text) !important;
+  --toolbar-color: var(--text) !important;
+  --newtab-text-primary-color: var(--text) !important;
+  --arrowpanel-color: var(--text) !important;
+  --arrowpanel-background: var(--overlay) !important;
+  --sidebar-text-color: var(--text) !important;
+  --lwt-sidebar-text-color: var(--text) !important;
+  --lwt-sidebar-background-color: var(--base) !important;
+  --toolbar-bgcolor: var(--base) !important;
+  --newtab-background-color: var(--overlay) !important;
+  --zen-themed-toolbar-bg: var(--base) !important;
+  --zen-main-browser-background: var(--base) !important;
+  --zen-main-browser-background-toolbar: var(--base) !important;
+  --zen-navigator-toolbox-background: var(--base) !important;
+}
+
+/* ── Local design tokens ───────────────────────────────────────────────────── */
+
+:root {
+  /* Rosé Pine love. Matches the niri focus-ring active-color in
+   * ~/.config/niri/config.kdl. Declared at :root so popups and toolbar buttons
+   * can reach it; a variable set on menupopup does not apply to those. */
+  --rp-accent: #eb6f92;
+
+  /* Hover fill, shared by context menus, the "..." panel and urlbar results so
+   * all three highlight identically. One step above the menu background. */
+  --rp-menu-hover: var(--overlay);
+
+  /* Urlbar field fill. One step above --base so the field separates from the
+   * toolbar without competing with the results list. */
+  --rp-urlbar-bg: var(--surface);
+
+  /* Outline shared by the urlbar edge and every popup border, so all four
+   * read as the same ring. The accent at 40% keeps it from competing with
+   * menu text. */
+  --rp-border: color-mix(in srgb, var(--rp-accent) 40%, transparent);
+  --rp-border-width: 2px;
+
+  /* Fills for accent-derived button backgrounds. zen-buttons.css:87 derives
+   * --zen-accent-button-background from --zen-primary-color through oklch(),
+   * and oklch keeps the hue of its input — a near-black primary yields a
+   * near-grey result. Overriding the derived value keeps it on palette. */
+  --rp-accent-btn-bg: color-mix(
+    in srgb,
+    var(--rp-accent) 30%,
+    var(--surface)
+  );
+}
+
+/* ── Values that ship as literals or system colors ─────────────────────────── */
+
+:root {
+  /* Hover fills. The app menu rows are painted by panelUI-shared.css:977 and
+   * :1117 from --button-background-color-hover, not the similarly named
+   * --toolbarbutton-background-color-*. Firefox resolves that to a violet mix
+   * (--button-background-color-ghost-hover, --color-violet-60 at 16%), which
+   * is the off-palette highlight. Zen does not override this variable; it only
+   * sets --in-content-button-background-hover (zen-theme.css:92), a different
+   * name. The ghost pair is included for anything reading it indirectly. */
+  --button-background-color-hover: var(--rp-menu-hover) !important;
+  --button-background-color-active: var(--rp-menu-hover) !important;
+  --button-background-color-ghost-hover: var(--rp-menu-hover) !important;
+  --button-background-color-ghost-active: var(--rp-menu-hover) !important;
+
+  /* Menubar and urlbar button hovers do read these two. */
+  --toolbarbutton-background-color-hover: var(--rp-menu-hover) !important;
+  --toolbarbutton-background-color-active: var(--rp-menu-hover) !important;
+  --toolbarbutton-background-color: transparent !important;
+
+  /* menu.css:281-284 sets the menu hover text pair from system colors, which
+   * resolve to the light GTK pair and ignore the palette. */
+  -moz-menuhovertext: var(--text) !important;
+  -moz-menuhoverdisabled: var(--surface) !important;
+
+  /* Attention-state icon fill: star, reader mode, translations, revert button.
+   * Firefox ships this as light-dark(--color-blue-60, --color-cyan-30), a
+   * literal blue. Zen pins it at :root with !important (zen-theme.css:104), so
+   * an element-level override loses; it has to be replaced here. */
+  --toolbarbutton-icon-fill-attention: var(--rp-accent) !important;
+  --toolbarbutton-icon-fill-attention-text: var(--text) !important;
+
+  /* Urlbar results list: hover/selected rows, separators and the panel fill
+   * (zen-omnibox.css:21 and :62). */
+  --urlbar-box-background-color: var(--rp-urlbar-bg) !important;
+  --urlbarview-background-color-hover: var(--rp-menu-hover) !important;
+  --urlbarview-background-color-selected: var(--rp-menu-hover) !important;
+  --urlbarview-separator-color: var(--rp-overlay) !important;
+  --urlbar-box-hover-bgcolor: var(--rp-menu-hover) !important;
+  --urlbar-box-active-bgcolor: var(--rp-menu-hover) !important;
+
+  /* --zen-primary-color is declared in the upstream block above; --toolbox-textcolor
+   * is not in upstream and needs the same treatment. Both are written as *inline*
+   * styles on documentElement by ZenGradientGenerator.mjs (lines 1792 and 1796)
+   * and by zenThemeModifier.js:208. An inline style beats a stylesheet rule, so
+   * an !important declaration is what makes either take effect. */
+  --toolbox-textcolor: var(--text) !important;
+}
+
+/* The two background variables above are also written as inline styles on these
+ * two elements (ZenGradientGenerator.mjs:1750 and :1746). They are descendants
+ * of :root, and inheritance stops at any element that declares a property
+ * itself, so the :root values never reach them. */
+#zen-browser-background,
+.zen-browser-generic-background {
+  --zen-main-browser-background: var(--base) !important;
+  --zen-main-browser-background-toolbar: var(--base) !important;
+}
+
+#zen-toolbar-background {
+  --zen-main-browser-background-toolbar: var(--base) !important;
+}
+
+/* ── Context menus (menupopup) ────────────────────────────────────────────────
+ * Menu internals live in a shadow tree, so these must sit on the host element.
+ */
+
+menupopup {
+  /* Separators: menu.css:154 draws them with
+   *   menuseparator::before { border-top: 1px solid var(--panel-separator-color) }
+   * and Zen sets that to a currentColor mix (zen-theme.css:260). Making the
+   * color transparent removes the line along with its space. */
+  --panel-separator-color: transparent !important;
+
+  /* Border: popup.css:76 already draws it as
+   *   border: 1px solid var(--panel-border-color)
+   * and line 23 sets that variable to transparent. Setting the variable keeps
+   * the border aligned with the panel's own box-sizing and radius; setting
+   * `border` on the host instead produces a second, offset outline. */
+  --panel-border-color: var(--rp-border) !important;
+
+  /* The dark halo: popup.css:78 draws box-shadow and :79 adds margin purely to
+   * make room for it, which reads as a second border. popup.css:49-56 zeroes
+   * both together in one context, so these are the intended knobs. */
+  --panel-box-shadow: none !important;
+  --panel-box-shadow-margin: 0px !important;
+
+  /* popup.css:71 draws the background from --panel-background-color, which
+   * otherwise resolves to the system `Menu` color. */
+  --panel-background-color: var(--surface) !important;
+  --panel-text-color: var(--text) !important;
+  background-color: var(--surface) !important;
+
+  /* menu.css:280 uses the system color -moz-menuhover, which resolves to the
+   * GTK accent. Zen does not declare it, so scoping here is enough. */
+  -moz-menuhover: var(--rp-menu-hover) !important;
+  -moz-menubarhovertext: var(--text) !important;
+
+  --zen-accent-button-background: var(--rp-accent-btn-bg) !important;
+  --zen-accent-button-color: var(--text) !important;
+}
+
+/* menu.css uses SelectedItem/SelectedItemText for menubar hover on Windows and
+ * under [lwtheme] roots — also system colors. */
+menubar > menu[_moz-menuactive]:not([disabled]) {
+  background-color: var(--rp-menu-hover) !important;
+  color: var(--text) !important;
+}
+
+menupopup > menu[_moz-menuactive]:not([disabled]),
+menupopup > menuitem[_moz-menuactive]:not([disabled]) {
+  background-color: var(--rp-menu-hover) !important;
+  color: var(--text) !important;
+}
+
+/* Disabled items should not compete with the enabled ones. */
+menupopup > menu[_moz-menuactive][disabled],
+menupopup > menuitem[_moz-menuactive][disabled] {
+  background-color: var(--surface) !important;
+  color: var(--text-color-disabled, var(--muted)) !important;
+}
+
+/* ── App menu and other panel popups ──────────────────────────────────────────
+ * These are `panel` elements, not `menupopup`, so none of the rules above
+ * reach them. They use the same --panel-* variables.
+ */
+
+panel,
+panel[type="arrow"],
+.panel-arrowcontent {
+  --panel-separator-color: transparent !important;
+  --panel-border-color: var(--rp-border) !important;
+  --panel-box-shadow: none !important;
+  --panel-box-shadow-margin: 0px !important;
+  --panel-background-color: var(--surface) !important;
+  --panel-text-color: var(--text) !important;
+}
+
+/* Widen the popup outline. popup.css:76 hardcodes 1px with no width variable,
+ * so border-width is restated here. Targeting ::part(content) rather than the
+ * host is what avoids a misaligned duplicate edge. box-sizing stays border-box
+ * (popup.css:67), so this eats into padding rather than resizing the panel. */
+menupopup::part(content),
+panel::part(content) {
+  border-width: var(--rp-border-width) !important;
+  border-style: solid !important;
+  border-color: var(--rp-border) !important;
+}
+
+/* Direct hover rules for app-menu rows, which are toolbarbuttons rather than
+ * menupopup children. The :root variables above should be sufficient. */
+panel .toolbarbutton-1:hover:not([disabled]),
+panel .toolbarbutton-1:hover:active:not([disabled]),
+panel .subviewbutton:not([disabled]):hover,
+panel .subviewbutton:not([disabled]):hover:active {
+  background-color: var(--rp-menu-hover) !important;
+}
+
+/* panelUI-shared.css:59 styles app-menu separators with
+ * `color: var(--panel-separator-color)`. To keep the divider but recolor it,
+ * set this to var(--rp-overlay) instead of transparent. */
+panel > toolbarseparator {
+  color: transparent !important;
+}
+
+/* ── Urlbar ──────────────────────────────────────────────────────────────────
+ * zen-omnibox.css hardcodes the urlbar fill and edge as literals, so neither
+ * can be reached by overriding a variable.
+ */
+
+.urlbar .urlbar-background,
+.urlbar-input-container > .urlbar-background {
+  /* Line 278: light-dark(rgb(255,255,255), rgb(24,24,24)). The acrylic path
+   * at line 283 hardcodes rgba(20,20,20,.92) instead. Both are overridden. */
+  --zen-urlbar-background-base: var(--rp-urlbar-bg) !important;
+  --zen-urlbar-background-transparent: var(--rp-urlbar-bg) !important;
+  background-color: var(--rp-urlbar-bg) !important;
+
+  /* Line 291: outline: 0.5px solid light-dark(rgba(0,0,0,.2), rgb(75,75,75)).
+   * Because this is the shorthand, setting outline-color alone cannot win — the
+   * shorthand carries the color and must be restated. */
+  outline: var(--rp-border-width) solid var(--rp-border) !important;
+  outline-offset: var(--zen-urlbar-outline-offset) !important;
+}
+
+/* ── Accent buttons ────────────────────────────────────────────────────────── */
+
+/* Toolbar buttons embedded in menus, e.g. the bookmark star. */
+toolbar .toolbarbutton-1:is([checked], [open]) {
+  --zen-accent-button-background: var(--rp-accent-btn-bg) !important;
+  --zen-accent-button-color: var(--text) !important;
+  background-color: var(--rp-accent-btn-bg) !important;
+}
+
+/* Star / bookmark button. urlbar.css:769 sets
+ *   #star-button[starred] { fill: var(--toolbarbutton-icon-fill-attention) }
+ * — a fill on the icon, keyed on [starred], not a background on [checked].
+ * The variable itself is replaced at :root above. */
+#star-button[starred],
+#pageAction-panel-bookmark[starred] {
+  fill: var(--rp-accent) !important;
+}
+
+#star-button-box[starred] {
+  background-color: color-mix(
+    in srgb,
+    var(--rp-accent) 18%,
+    var(--surface)
+  ) !important;
+}
+
+/* ── Upstream component rules ────────────────────────────────────────────────
+ * Kept from rose-pine/zen-browser, except where noted.
+ */
+
+#permissions-granted-icon {
+  color: #181825 !important;
+}
+
+.sidebar-placesTree {
+  background-color: var(--surface) !important;
+}
+
+#zen-workspaces-button {
+  background-color: var(--surface) !important;
+}
+
+#urlbar-background {
+  background-color: var(--surface) !important;
+}
+
+.tab-background[selected=""] {
+  background: var(--overlay) !important;
+}
+
+/* Upstream ships #89b4fa here, a Catppuccin blue that is not in the Rosé Pine
+ * palette. Recolored to iris. */
+.content-shortcuts {
+  background-color: var(--surface) !important;
+  border-color: var(--iris) !important;
+}
+
+.urlbarView-url {
+  color: var(--iris) !important;
+}
+
+#zenEditBookmarkPanelFaviconContainer {
+  background: var(--base) !important;
+}
+
+toolbar .toolbarbutton-1 {
+  &:not([disabled]) {
+    &:is([open], [checked])
+      > :is(
+        .toolbarbutton-icon,
+        .toolbarbutton-text,
+        .toolbarbutton-badge-stack
+      ) {
+      fill: var(--base);
+    }
+  }
+}
